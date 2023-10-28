@@ -1,0 +1,22 @@
+{
+  "name": "cacp-sdzs-nafh-hmgg",
+  "version": "1.0.0",
+  "description": "Asignacion elaborada por Cesar Colina, Steven Zarraga, Nohel Flores y Hernan Guerrero",
+  "main": "index.js",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "mongoose": "^7.6.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "scripts": {
+    "dev": "nodemon ./index.js",
+    "start": "node ./index.js"
+  }
+}
