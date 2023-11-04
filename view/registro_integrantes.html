@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data integrantes</title>
+
+    <script language="javascript">
+        
+        function Subir(){
+            
+            var formulario="";
+            var cedula=document.form.cedula.value;
+            var nombre=document.form.nombre.value;
+            var apellido=document.form.apellido.value;
+            console.log(cedula + " " + nombre + " " +apellido);
+            
+            formulario="Cedula: " + cedula + "\nNombre: " + nombre + "\nApellido: " + apellido;
+	        alert(formulario);	
+
+            fetch('http://localhost:5500/api/Registrar',{
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                },
+                body: JSON.stringify({
+                    cedula, nombre, apellido
+                }) // body data type must match "Content-Type" header
+            })
+            .then(response => response.json())
+            .catch((error) => console.error("Error:", error))
+            .then((respuesta)=>{
+                console.log(respuesta)
+                alert(respuesta.Mensaje);
+                if (respuesta.Respuesta=='Ok'){
+                    location.reload();
+                }
+            })
+        }
+    </script>
+</head> 
+<body>
+    <h1 class="title">Registrar en JSON</h1>
+    <form name="form" method="POST" action="" class="form">
+        <div class="input-group">
+            <span>Cédula:</span>
+            <input type="text" name="cedula" id="cedula" required>
+        </div>
+        <div class="input-group">
+            <span>Nombre:</span>
+            <input type="text" name="nombre" id="nombre" required>
+        </div>
+        <div class="input-group">
+            <span>Apellido:</span>
+            <input type="text" name="apellido" id="apellido" required>
+        </div>
+        <button type="button" name="boton" class="btn-submit" onClick="Subir()">Enviar</button>
+    </form>
+</body>
+</html>
+
+<style>
+body{
+    width: 100vw; 
+    height: 100vh; 
+    background: linear-gradient(90deg, hsla(154, 100%, 76%, 1) 0%, hsla(234, 100%, 83%, 1) 50%, hsla(288, 100%, 81%, 1) 100%); 
+    margin:0;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+}
+h1{
+    color: white; 
+    text-align: center; 
+    font-size: 44px;
+}
+.form{
+    width: 50vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.input-group{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+}
+span{
+    color: white;
+    font-size: 24px;
+}
+input{
+    border:none;
+    border-radius: 10px;
+    width: 300px;
+    height: 25px;
+    outline: none;
+    padding: 10px;
+}
+.btn-submit{
+    width: 150px;
+    height: 50px;  
+    border-radius: 5px; 
+    border: none; 
+    background: white; 
+    color: plum; 
+    font-size: 20px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    cursor: pointer;
+    margin-top: 10px;
+}
+</style>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consultar integrantes</title>
+</head>
+<body>
+  <div class="title">
+    <h2 style="color: white; text-align: center; font-size: 44px;">Registros:</h2>
+  </div>
+ 
+  <input type="button" value="Consultar" onclick="calc()" style="width: 150px;height: 50px;cursor: pointer;  border-radius: 5px; border: none; background: white; color: plum; font-size: 20px; display: flex; align-items: center; justify-content: center; "> 
+  <div id="result"></div>
+  <table id="table" class="table" style="width: 50vw; text-align: center; margin-top: 50px;"></table>
+    <script type="text/javascript">
+        function calc(){
+            fetch('http://localhost:5500/api/Consultar',{
+                method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+      .then((response) => response.json())
+      .then((data) => {
+        const registrosTable = document.querySelector('table');
+        registrosTable.innerHTML = `
+          <tr>
+            <th>Cédula</th>
+            <th>Nombre</th>
+            <th>Apellido</th>
+          </tr>
+        `;
+        data.forEach((registro) => {
+          registrosTable.innerHTML += `
+            <tr>
+              <td>${registro.cedula}</td>
+              <td>${registro.nombre}</td>
+              <td>${registro.apellido}</td>
+            </tr>
+          `;
+        });
+      });
+  }
+    </script>
+</body>
+</html>
+
+<style>
+  body{
+    width: 100vw; 
+    height: 100vh; 
+    background: linear-gradient(90deg, hsla(154, 100%, 76%, 1) 0%, hsla(234, 100%, 83%, 1) 50%, hsla(288, 100%, 81%, 1) 100%); 
+    margin:0;
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+}
+  table {
+  border-collapse: collapse;
+  max-width: 800px; 
+  background: rgba(255, 255, 255, 0.8); 
+  border-radius: 5px;
+}
+table, th, td {
+  /* border: 1px solid white; */
+  text-align: center;
+}
+th, td {
+  padding: 8px;
+}
+th {
+  background-color: plum; 
+  color: #fff; 
+}
+
+</style>
