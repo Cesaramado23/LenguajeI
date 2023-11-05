@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplicacion web</title>
+
+    
+</head>
+<body>
+    <header>
+        <img class="logo" src="../public/escuela.png" alt="logo" srcset="">
+        <h1 class="title">Escuela IEP</h1>
+    </header>
+    <main>
+        <section class="section-register">
+            <h1 class="title-register">Registrar estudiante</h1>
+            <form name="form1" method="POST" action="" class="form">
+                <div class="form-container1">
+                    <h2 class="subtitle-data">Datos del estudiante</h2>
+                    <div class="input-group">
+                        <span>Cédula:</span>
+                        <input type="text" class="input-text" name="cedula" id="cedula" required>
+                    </div>
+                    <div class="input-group">
+                        <span>Nombre:</span>
+                        <input type="text" class="input-text" name="nombre" id="nombre" required>
+                    </div>
+                    <div class="input-group">
+                        <span>Apellido:</span>
+                        <input type="text" class="input-text" name="apellido" id="apellido" required>
+                    </div>
+                    <div class="input-group">
+                        <span>Sexo:</span>
+                        <div class="radio-group">
+                            <input type="radio" class="input-radio" id="sexoM" name="sexo" value="Masculino">
+                            <label for="SexoM">Masculino</label>
+                            <input type="radio" class="input-radio" id="sexoF" name="sexo" value="Femenino" style="margin-left: 10px;">
+                            <label for="SexoF">Femenino</label>
+                        </div>
+                    </div>                    
+                </div>
+                <div class="bar"></div>
+                <div class="form-container2">
+                    <h2 class="subtitle-grades">Notas del estudiante</h2>
+                    <div class="grades">
+                        <div class="input-group">
+                            <span>Matemática:</span>
+                            <input type="number" class="input-number" name="matematica" id="matematica" min="0" max="20" required>
+                        </div>
+                        <div class="input-group">
+                            <span>Inglés:</span>
+                            <input type="number" class="input-number" name="ingles" id="ingles" min="0" max="20" required>
+                        </div>
+                        <div class="input-group">
+                            <span>Castellano:</span>
+                            <input type="number" class="input-number" name="castellano" id="castellano" min="0" max="20" required>
+                        </div>
+                        <div class="input-group">
+                            <span>Biología:</span>
+                            <input type="number" class="input-number" name="biologia" id="biologia" min="0" max="20" required>
+                        </div>
+                    </div>
+                    <button type="button" name="boton" class="btn-submit" onClick="Subir()"><strong>Registrar</strong></button>
+                </div>
+            </form>
+        </section>
+        <section class="section-query">
+            <h1 class="title-query">Consultar notas</h1>
+            <div id="result"></div>
+        </section>
+    </main>
+</body>
+</html>
+<script>
+    const inputs = document.querySelectorAll('input[type="number"]');
+
+    inputs.forEach(input => {
+        input.addEventListener('input', function () {
+            const value = parseInt(input.value, 10);
+            if (isNaN(value)) {
+                input.value = 0;
+            } else if (value > 20) {
+                input.value = 20;
+            }
+        });
+    });
+    function Subir(){
+	var formulario="";
+	var cedula=document.form1.cedula.value;
+	var nombre=document.form1.nombre.value;
+	var apellido=document.form1.apellido.value;
+    var sexo=document.form1.sexo.value;
+    var matematica=document.form1.matematica.value;
+    var ingles=document.form1.ingles.value;
+    var castellano=document.form1.castellano.value;
+    var biologia=document.form1.biologia.value;
+    formulario="Cedula: " + cedula + "\nNombre: " + nombre + "\nApellido: " + apellido + "\nSexo: " + sexo +  "\n"+ 
+    "\nMatematica: " +matematica + "\ningles: " + ingles  + "\nCastellano: " + castellano + "\nBiologia: "
+		+ biologia ;
+	// alert(formulario);
+    fetch('http://localhost:5500/api/RegistrarDB',{
+                method: 'POST', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                },
+                body: JSON.stringify({
+                    cedula, nombre, apellido, sexo, matematica, ingles,castellano, biologia
+                }) // body data type must match "Content-Type" header
+            })
+            .then(response => response.json())
+            .catch((error) => console.error("Error:", error))
+            .then((respuesta)=>{
+                console.log(respuesta)
+                alert(respuesta.Mensaje);
+                if (respuesta.Respuesta=='Ok'){
+                    location.reload();
+                }
+            })
+    }
+            fetch('http://localhost:5500/api/ConsultarDB',{
+                method: 'GET', // *GET, POST, PUT, DELETE, etc.
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8"
+                }
+            })
+            .then(response => response.json())
+            .catch((error) => console.error("Error:", error))
+            .then((respuesta)=>{
+                console.log(respuesta)
+                let resultado =` 
+                
+                `;
+                respuesta.map(val=>{
+                    resultado+= `
+                        <div class="card">
+                                <div class="data-container">
+                            <h4><b>${val.nombre} ${val.apellido}</b></h4>
+                            <p>Cédula: ${val.cedula}</p>
+                            </div>
+                            <div class="grades-container">
+                                <p><b>Notas:</b></p>
+                                <p class="materia">Matemática: ${val.matematica}</p>
+                                <p class="materia">Inglés: ${val.ingles}</p>
+                                <p class="materia">Castellano: ${val.castellano}</p>
+                                <p class="materia">Biología: ${val.biologia}</p>
+                            </div>
+                    </div>
+                    `
+                })
+                resultado+=`
+                        
+                `
+                console.log(resultado)
+                document.getElementById('result').innerHTML=resultado
+                
+            })
+            
+</script>
+<style>
+    *{
+        margin: 0;
+    }
+    header{
+        background: #064420;
+        height: 150px;
+        position: sticky;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .logo{
+        margin-left: 50px;
+        width: 100px;
+        height: 100px;
+    }
+    .title{
+        margin-left: 25px;
+        color: white;
+        font-size: 44px;
+    }
+    .section-register{
+        background: #E4EFE7;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    .title-register{
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 44px;
+        color: #064420;
+    }
+    .form{
+        display: flex;
+        height: auto;
+        justify-content: space-evenly;
+        width: 60%;
+    }
+    .bar{
+        background: #064420;
+        width: 1px;
+    }
+    /* .form-container2{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    } */
+    .grades{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+    .input-group{
+    display: flex;
+    flex-direction: column;
+    margin: 10px;
+    }
+    span{
+        color: black;
+        font-size: 18px;
+    }
+    .input-text{
+        background: none;
+        border: none;
+        border-bottom: #064420 solid 3px;
+        width: 250px;
+        height: 15px;
+        outline: none;
+        padding: 10px;
+    }
+    .input-number{
+        background: none;
+        border: none;
+        border-bottom: #064420 solid 3px;
+        width: 75px;
+        height: 15px;
+        outline: none;
+        padding: 10px;
+        
+    }
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    }
+    .radio-group{
+        margin: 10px;
+        font-size: 18px;
+    }
+    .input-radio{
+        cursor: pointer;
+    }
+    .btn-submit{
+        border: none;
+        outline: none;
+        background: #FDFAF6;
+        border-radius: 15px;
+        width: 100px;
+        height: 50px;
+        cursor: pointer;
+        font-size: 18px;
+        color: #064420;
+        padding: 5px;
+        margin-top: 50px;
+    }
+    .section-query{
+        background: #FAF1E6;
+        position: sticky;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    #result{
+        flex-wrap: wrap;
+        gap: 30px;  
+        display: flex;
+        flex-direction: row;
+        width: 100%;
+        justify-content: center;
+    }
+    .title-query{
+        text-align: center;
+        width: 100%;
+        margin-top: 20px;
+        margin-bottom: 20px;
+        font-size: 44px;
+    }
+    .card {
+    width: 250px;
+    height: 200px;
+    padding: 15px;
+    margin: 20px;
+    background: #FDFAF6;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+    transition: 0.3s;
+
+    }
+    .card h4{
+        font-size: 24px;
+    }
+    .card p{
+        font-size: 20px;
+    }
+    .card:hover {
+    box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2);
+    }
+    .data-container, .grades-container {
+    padding: 2px 16px;
+    }
+</style>

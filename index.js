@@ -4,7 +4,7 @@ const app = express();
 const cors = require('cors');
 const http = require('http').Server(app);
 
-
+require('./database');
 require('dotenv').config({path:'./variables.env'})
 
 //Importar variable
@@ -16,9 +16,7 @@ app.set('port', port );
 
 // middlewares
 app.use(cors());
-app.use(express.static('view'));
-
-
+app.use('/public', express.static(path.join(__dirname, 'public')))
 app.use(express.json({limit: '5mb'}));
 app.use(express.urlencoded({ limit: '5mb', extended: true}));
 
@@ -26,6 +24,11 @@ app.use(express.urlencoded({ limit: '5mb', extended: true}));
 
 app.use('/api', require('./routers/api'));
 
+
+app.get('/aplicacion',(req,res)=>{
+    res.sendFile(path.join(__dirname,'view','aplicacion_web.html'));
+    console.log("GET con al aplicacion web");
+})
 app.get('/registro',(req,res)=>{
     res.sendFile(path.join(__dirname,'view','registro_integrantes.html'));
     console.log("GET con al registro");

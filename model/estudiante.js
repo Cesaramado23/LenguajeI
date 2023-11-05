@@ -16,3 +16,33 @@ const registroModel = {
 };
 
 module.exports = registroModel;
+
+const { Schema, model } = require('mongoose');
+
+const usuarioSchema = new Schema(
+    {
+        cedula:  {
+            type: String,
+            trim: true,
+            unique:true
+        },
+        nombre:  {
+            type: String,
+            trim: true,
+        },
+        apellido:  {
+            type: String,
+            trim: true,
+        },
+        sexo:String,
+        matematica: Number,
+        ingles: Number,
+        castellano: Number,
+        biologia: Number
+        
+
+    }, {
+        timestamps: true
+    });
+    usuarioSchema.index({'$**': 'text'});
+module.exports = model('Usuario', usuarioSchema);
